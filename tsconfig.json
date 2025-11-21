@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strict": true,
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "skipLibCheck": true,
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true
+  }
+}

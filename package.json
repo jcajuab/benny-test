@@ -1,0 +1,16 @@
+{
+  "name": "benny-test",
+  "private": true,
+  "type": "module",
+  "module": "index.ts",
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.71",
+    "@qdrant/js-client-rest": "^1.16.0",
+    "ai": "^5.0.98",
+    "unstructured-client": "^0.29.1"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.2",
+    "typescript": "^5.9.3"
+  }
+}
