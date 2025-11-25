@@ -6,7 +6,6 @@ import { openai } from "@ai-sdk/openai";
 import { embedMany } from "ai";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
-// Initialize clients
 const client = new UnstructuredClient({
   serverURL: process.env.UNSTRUCTURED_API_URL!,
   security: {
@@ -20,24 +19,21 @@ const qdrantClient = new QdrantClient({
   port: null, // Don't append default port since URL already includes routing
 });
 
-const COLLECTION_NAME = "document_embeddings";
-const filename = "sample.docx";
+const COLLECTION_NAME = "benny";
+const defaultFilename = "docs/docx/Tom Malek Pearson.docx";
 
-async function main() {
+type DocumentInput = {
+  filename: string;
+  data: Buffer;
+};
+
+export async function processDocument({ filename, data }: DocumentInput) {
   console.log("=== DOCUMENT PROCESSING PIPELINE ===\n");
 
   // STEP 1: DOCUMENT PREPROCESSING VIA UNSTRUCTURED
   console.log("[STEP 1/3] DOCUMENT PREPROCESSING");
-  console.log(`- Reading file: ${filename}`);
-
-  let data: Buffer;
-  try {
-    data = fs.readFileSync(filename);
-    console.log(`✓ File read successfully (${data.length} bytes)`);
-  } catch (error) {
-    console.error("✗ Error reading file:", error);
-    throw error;
-  }
+  console.log(`- Received file: ${filename}`);
+  console.log(`- Size: ${data.length} bytes`);
 
   console.log(`- Calling Unstructured API for document partitioning...`);
   let elements: Array<{ [k: string]: any }>;
@@ -206,10 +202,33 @@ async function main() {
   console.log(`  - Collection: ${COLLECTION_NAME}`);
 }
 
-// Execute main function with error handling
-main().catch((error) => {
-  console.error("\n=== PIPELINE FAILED ===");
-  console.error("Fatal error occurred:");
-  console.error(error);
-  process.exit(1);
-});
+async function main() {
+  const filename = defaultFilename;
+  console.log(`Reading local file: ${filename}`);
+
+  let data: Buffer;
+  try {
+    data = fs.readFileSync(filename);
+    console.log(`✓ File read successfully (${data.length} bytes)`);
+  } catch (error) {
+    console.error("✗ Error reading file:", error);
+    throw error;
+  }
+
+  await processDocument({ filename, data });
+}
+
+// Execute main function with error handling when run directly
+const isMainModule =
+  typeof process !== "undefined" &&
+  process.argv[1] &&
+  new URL(import.meta.url).pathname === new URL(`file://${process.argv[1]}`).pathname;
+
+if (isMainModule) {
+  main().catch((error) => {
+    console.error("\n=== PIPELINE FAILED ===");
+    console.error("Fatal error occurred:");
+    console.error(error);
+    process.exit(1);
+  });
+}
