@@ -5,9 +5,8 @@ export type AppConfig = {
   messagesPrefix: string;
   detailsPrefix: string;
   rawFilesPrefix: string;
-  workspaceId: string;
-  connectorId?: string | null;
-  connectionId?: string | null;
+  workspaceId: string; // required
+  connectorId: string; // required
 };
 
 const required = (name: string) => {
@@ -18,8 +17,10 @@ const required = (name: string) => {
 
 export function loadConfig(): AppConfig {
   const airbytePrefix = process.env.AIRBYTE_S3_PREFIX || "raw/";
-  const workspaceId = process.env.AIRBYTE_WORKSPACE_ID || process.env.WORKSPACE_ID;
-  if (!workspaceId) throw new Error("Missing AIRBYTE_WORKSPACE_ID (or WORKSPACE_ID)");
+  const workspaceId = process.env.AIRBYTE_WORKSPACE_ID;
+  if (!workspaceId) throw new Error("Missing AIRBYTE_WORKSPACE_ID");
+  const connectorId = process.env.AIRBYTE_CONNECTION_ID;
+  if (!connectorId) throw new Error("Missing AIRBYTE_CONNECTION_ID");
   return {
     region: required("AWS_REGION"),
     bucket: required("AIRBYTE_S3_BUCKET"),
@@ -28,7 +29,6 @@ export function loadConfig(): AppConfig {
     detailsPrefix: process.env.DETAILS_PREFIX || `${airbytePrefix}messages_details/`,
     rawFilesPrefix: process.env.RAW_FILES_PREFIX || `${airbytePrefix}raw-files/`,
     workspaceId,
-    connectorId: process.env.CONNECTOR_ID || null,
-    connectionId: process.env.AIRBYTE_CONNECTION_ID || null,
+    connectorId,
   };
 }

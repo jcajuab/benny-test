@@ -74,7 +74,7 @@ export async function processMessages(
               files: {
                 insert: {
                   workspace_id: config.workspaceId,
-                  connector_id: config.connectorId ?? config.connectionId ?? "(missing connector_id)",
+                  connector_id: config.connectorId,
                   path: targetKey,
                   format: "eml",
                   mime_type: "message/rfc822",
